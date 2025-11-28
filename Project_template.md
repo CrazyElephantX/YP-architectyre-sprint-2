@@ -5,7 +5,8 @@
 1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
 Результат представьте в виде контейнерной диаграммы в нотации С4.
 Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
+![c4-container-diagram](/docs/architecture/c4-container-diagram.png)
+[c4-container-diagram](/docs/architecture/c4-container-diagram.pulm)
 
 # Задание 2
 
@@ -29,8 +30,7 @@
       - "8000:8000"
     environment:
       PORT: 8000
-      MONOLITH_URL: http://monolith:8080
-      #монолит
+      MONOLITH_URL: http://monolith:8080 #монолит
       MOVIES_SERVICE_URL: http://movies-service:8081 #сервис movies
       EVENTS_SERVICE_URL: http://events-service:8082 
       GRADUAL_MIGRATION: "true" # вкл/выкл простого фиче-флага
@@ -52,12 +52,17 @@
 
 Для этого нужно сделать MVP сервис events, который будет при вызове API создавать и сам же читать сообщения в топике Kafka.
 
-    - Разработайте сервис на любом языке программирования с consumer'ами и producer'ами.
+    - Разработайте сервис на любом языке прогcdраммирования с consumer'ами и producer'ами.
     - Реализуйте простой API, при вызове которого будут создаваться события User/Payment/Movie и обрабатываться внутри сервиса с записью в лог
     - Добавьте в docker-compose новый сервис, kafka там уже есть
 
 Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
 Приложите скриншот тестов и скриншот состояния топиков Kafka из UI http://localhost:8090 
+
+![Тесты 1](/tests/tests.png)
+![Тесты 2](/tests/postman.png)
+![Тесты 3](/tests/kafka.png)
+
 
 # Задание 3
 

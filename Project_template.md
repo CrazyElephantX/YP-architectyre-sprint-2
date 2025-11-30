@@ -62,6 +62,7 @@
 ![Тесты 1](/tests/tests.png)
 ![Тесты 2](/tests/postman.png)
 ![Тесты 3](/tests/kafka.png)
+![Тесты 4](/tests/kafka2.png)
 
 
 # Задание 3

@@ -52,6 +52,18 @@ services:
     networks:
       - cinemaabyss-network
 
+  # Kafka Topics Creator
+  kafka-topics-creator:
+    image: wurstmeister/kafka:2.13-2.7.0
+    container_name: cinemaabyss-kafka-topics-creator
+    depends_on:
+      - kafka
+    volumes:
+      - ./scripts:/scripts
+    command: ["/scripts/create-kafka-topics.sh"]
+    networks:
+      - cinemaabyss-network
+
   # Monolith Service
   monolith:
     build:

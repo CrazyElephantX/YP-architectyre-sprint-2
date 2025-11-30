@@ -1,9 +1,8 @@
 FROM golang:alpine as builder
 
-ENV CGO_ENABLED 1 \
-    GOOS linux \
-    GOARCH=arm64 \
-    GOMODULE on
+ENV CGO_ENABLED=1 \
+    GOOS=linux \
+    GOMODULE=on
 
 RUN apk add --no-cache build-base pkgconfig librdkafka-dev
 

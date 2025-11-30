@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"cinemaabyss/events/internal/adapter/db"
 	"cinemaabyss/events/internal/adapter/produser"
 	"cinemaabyss/events/internal/controller/consumer"
 	"cinemaabyss/events/internal/lib/config"
@@ -65,6 +66,7 @@ func init() {
 
 	flag.StringVar(&cfg.Port, "port", "8082", "port")
 	flag.StringVar(&cfg.KafkaBrokers, "kafka-brokers", "localhost:9092", "kafka brokers")
+	flag.StringVar(&cfg.DSN, "dsn", "postgres://postgres:postgres@localhost/cinemaabyss?sslmode=disable", "database connection string")
 
 	flag.Parse()
 
@@ -76,9 +78,17 @@ func init() {
 		cfg.KafkaBrokers = envKafkaBrokers
 	}
 
+	if envDSN := os.Getenv("DB_CONNECTION_STRING"); envDSN != "" {
+		cfg.DSN = envDSN
+	}
+
 }
 
 func main() {
+
+	// Initialize database connection
+	dbConn := db.InitDB(cfg)
+	defer dbConn.Close()
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGHUP,
 		syscall.SIGINT,

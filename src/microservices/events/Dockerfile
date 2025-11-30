@@ -20,7 +20,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN go build -tags dynamic -buildvcs=false -o events main.go
+RUN go build -tags dynamic -buildvcs=false -o events-service main.go
 
 ###### Start a new stage from scratch #######
 FROM alpine
@@ -28,6 +28,6 @@ FROM alpine
 RUN apk add --no-cache librdkafka
 
 WORKDIR /root/
-COPY --from=builder /app/events .
+COPY --from=builder /app/events-service .
 EXPOSE 8082
 CMD ["./events-service"]

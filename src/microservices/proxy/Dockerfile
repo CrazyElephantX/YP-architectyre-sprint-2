@@ -14,12 +14,12 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o proxy main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o proxy-service main.go
 
 # Runtime stage
 FROM alpine:3.18
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
-COPY --from=builder /app/proxy .
+COPY --from=builder /app/proxy-service .
 EXPOSE 8000
 CMD ["./proxy-service"]

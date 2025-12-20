@@ -35,11 +35,25 @@ jobs:
       
       - name: Start services with Docker Compose
         run: |
-          # Start services with Docker Compose (this will create the network automatically)
-          docker compose up -d
-          # Wait for services to be ready
-          echo "Waiting for services to be ready..."
-          sleep 120
+          # Start services with Docker Compose
+          docker compose up -d postgres zookeeper kafka
+          echo "Waiting for Kafka to be ready..."
+          sleep 30
+          
+          # Create Kafka topics
+          docker compose up -d kafka-topics-creator
+          echo "Waiting for Kafka topics to be created..."
+          sleep 15
+          
+          # Start application services
+          docker compose up -d monolith movies-service events-service
+          echo "Waiting for application services to be ready..."
+          sleep 60
+          
+          # Start proxy service
+          docker compose up -d proxy-service
+          echo "Waiting for proxy service to be ready..."
+          sleep 30
       
       - name: Set up Node.js
         uses: actions/setup-node@v3

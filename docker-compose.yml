@@ -105,11 +105,11 @@ services:
     container_name: cinemaabyss-proxy-service
     depends_on:
       monolith:
-        condition: service_started
+        condition: service_healthy
       movies-service:
-        condition: service_started
+        condition: service_healthy
       events-service:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "8000:8000"
     environment:
@@ -136,8 +136,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      kafka:
-        condition: service_started
+      kafka-topics-creator:
+        condition: service_completed_successfully
     ports:
       - "8082:8082"
     environment:

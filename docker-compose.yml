@@ -72,7 +72,8 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-monolith
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
@@ -80,6 +81,11 @@ services:
       DB_CONNECTION_STRING: postgres://postgres:postgres_password@postgres:5432/cinemaabyss?sslmode=disable
     networks:
       - cinemaabyss-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # Movies Microservice
   movies-service:
@@ -88,7 +94,8 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-movies-service
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8081:8081"
     environment:
@@ -96,6 +103,11 @@ services:
       DB_CONNECTION_STRING: postgres://postgres:postgres_password@postgres:5432/cinemaabyss?sslmode=disable
     networks:
       - cinemaabyss-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8081/api/movies/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # Proxy Service (API Gateway)
   proxy-service:

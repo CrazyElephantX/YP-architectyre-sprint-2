@@ -148,6 +148,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      kafka:
+        condition: service_started
       kafka-topics-creator:
         condition: service_completed_successfully
     ports:

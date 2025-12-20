@@ -97,9 +97,18 @@ func main() {
 	)
 	defer cancel()
 
-	kafkaProducer, err := produser.NewKafkaProducer(cfg.KafkaBrokers)
+	// Try to connect to Kafka with retries
+	var err error
+	for i := 0; i < 30; i++ {
+		kafkaProducer, err = produser.NewKafkaProducer(cfg.KafkaBrokers)
+		if err == nil {
+			break
+		}
+		logrus.Warnf("Failed to connect to Kafka, retrying... (%d/30): %v", i+1, err)
+		time.Sleep(2 * time.Second)
+	}
 	if err != nil {
-		logrus.Fatalf("Error initializing kafka: %v", err)
+		logrus.Fatalf("Error initializing kafka after retries: %v", err)
 	}
 	defer kafkaProducer.Close()
 
@@ -135,19 +144,44 @@ func main() {
 		return server.ListenAndServe()
 	})
 
-	consumerMovieEvents, err := consumer.NewKafkaConsumer(cfg.KafkaBrokers, "movie-events")
+	// Start Kafka consumers with retries
+	var consumerMovieEvents *consumer.KafkaConsumer
+	for i := 0; i < 30; i++ {
+		consumerMovieEvents, err = consumer.NewKafkaConsumer(cfg.KafkaBrokers, "movie-events")
+		if err == nil {
+			break
+		}
+		logrus.Warnf("Failed to connect to movie-events topic, retrying... (%d/30): %v", i+1, err)
+		time.Sleep(2 * time.Second)
+	}
 	if err != nil {
-		logrus.Fatalf("failed to connect to kafka: %#v", err)
+		logrus.Fatalf("failed to connect to movie-events topic after retries: %#v", err)
 	}
 
-	consumerUserEvents, err := consumer.NewKafkaConsumer(cfg.KafkaBrokers, "user-events")
+	var consumerUserEvents *consumer.KafkaConsumer
+	for i := 0; i < 30; i++ {
+		consumerUserEvents, err = consumer.NewKafkaConsumer(cfg.KafkaBrokers, "user-events")
+		if err == nil {
+			break
+		}
+		logrus.Warnf("Failed to connect to user-events topic, retrying... (%d/30): %v", i+1, err)
+		time.Sleep(2 * time.Second)
+	}
 	if err != nil {
-		logrus.Fatalf("failed to connect to kafka: %#v", err)
+		logrus.Fatalf("failed to connect to user-events topic after retries: %#v", err)
 	}
 
-	consumerPaymentEvents, err := consumer.NewKafkaConsumer(cfg.KafkaBrokers, "payment-events")
+	var consumerPaymentEvents *consumer.KafkaConsumer
+	for i := 0; i < 30; i++ {
+		consumerPaymentEvents, err = consumer.NewKafkaConsumer(cfg.KafkaBrokers, "payment-events")
+		if err == nil {
+			break
+		}
+		logrus.Warnf("Failed to connect to payment-events topic, retrying... (%d/30): %v", i+1, err)
+		time.Sleep(2 * time.Second)
+	}
 	if err != nil {
-		logrus.Fatalf("failed to connect to kafka: %#v", err)
+		logrus.Fatalf("failed to connect to payment-events topic after retries: %#v", err)
 	}
 
 	errg.Go(func() error {

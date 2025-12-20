@@ -138,6 +138,7 @@ func main() {
 	http.HandleFunc("/api/events/user", handleEventUserWithKafka)
 	http.HandleFunc("/api/events/payment", handleEventPaymentWithKafka)
 	http.HandleFunc("/api/events/health", handleHealth)
+	http.HandleFunc("/health", handleHealth)
 
 	errg, ctx := errgroup.WithContext(ctx)
 	errg.Go(func() error {
@@ -206,6 +207,7 @@ func main() {
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]bool{"status": true})
 }
 

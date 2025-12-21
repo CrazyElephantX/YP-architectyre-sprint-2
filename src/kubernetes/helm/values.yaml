@@ -5,14 +5,14 @@ global:
 
 # Image pull secrets
 imagePullSecrets:
-  dockerconfigjson: "eyJhdXRocyI6eyJnaGNyLmlvIjp7ImF1dGgiOiJRM0poZW5sRmJHVndhR0Z1ZEZnNloyaHdYemxqZW1WemNWUm9RVWRNZURSWU1rc3pWRWcyV1hWd1JXdDRabHBxY2pCbVlXdG5Odz09In19fQ=="
+  dockerconfigjson: "eyJhdXRocyI6IHsiZ2hjci5pbyI6IHsiYXV0aCI6ICJZMlY0OlkyVjQifX19Cg=="
 # Database configuration
 database:
   host: postgres
   port: 5432
   name: cinemaabyss
   user: postgres
-  password: cG9zdGdyZXNfcGFzc3dvcmQ=
+  password: cG9zdGdyZXMK
   image:
     repository: postgres
     tag: 14

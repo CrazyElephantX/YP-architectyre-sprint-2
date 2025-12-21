@@ -31,6 +31,7 @@ vendor/
 # IDE specific files
 .idea/
 .vscode/
+.gigaide
 *.swp
 *.swo
 *~

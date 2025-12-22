@@ -5,7 +5,7 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies including newman reporters
 RUN npm install
 
 # Copy test files

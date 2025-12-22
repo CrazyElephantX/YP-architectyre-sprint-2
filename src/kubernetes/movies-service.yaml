@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: movies-service
-        image: ghcr.io/db-exp/cinemaabysstest/movies-service:latest
+        image: ghcr.io/CrazyElephantX/YP-architectyre-sprint-2/movies-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
@@ -56,8 +56,8 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 20
       restartPolicy: Always
-      imagePullSecrets:
-        - name: dockerconfigjson
+      #imagePullSecrets:
+      #  - name: dockerconfigjson
 ---
 apiVersion: v1
 kind: Service

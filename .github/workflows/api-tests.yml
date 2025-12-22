@@ -2,9 +2,9 @@ name: API Tests
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, cinema]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, cinema]
   workflow_dispatch:
     inputs:
       environment:
@@ -35,10 +35,25 @@ jobs:
       
       - name: Start services with Docker Compose
         run: |
-          docker compose up -d
-          # Wait for services to be ready
-          echo "Waiting for services to be ready..."
-          sleep 120
+          # Start services with Docker Compose
+          docker compose up -d postgres zookeeper kafka
+          echo "Waiting for Kafka to be ready..."
+          sleep 30
+          
+          # Create Kafka topics
+          docker compose up -d kafka-topics-creator
+          echo "Waiting for Kafka topics to be created..."
+          sleep 15
+          
+          # Start application services
+          docker compose up -d monolith movies-service events-service
+          echo "Waiting for application services to be ready..."
+          sleep 60
+          
+          # Start proxy service
+          docker compose up -d proxy-service
+          echo "Waiting for proxy service to be ready..."
+          sleep 30
       
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -54,17 +69,11 @@ jobs:
       - name: Run API tests
         working-directory: tests/postman
         run: |
-
-          docker compose up -d
-          # Wait for services to be ready
-          echo "Waiting for services to be ready..."
-          sleep 15
           # Build the Docker image
           docker build -t cinemaabyss-api-tests .
           
-          # Run the tests in Docker
-          docker run --network=cinemaabyss-network -v "$(pwd)/reports:/app/reports" cinemaabyss-api-tests
-        
+          # Run the tests in Docker with the same network as services
+          docker run --network=cinemaabyss-network -v "$(pwd)/reports:/app/reports" cinemaabyss-api-tests --environment docker --timeout 30000
       
       - name: Stop services
         if: always()

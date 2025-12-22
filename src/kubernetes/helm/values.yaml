@@ -4,15 +4,15 @@ global:
   domain: cinemaabyss.example.com
 
 # Image pull secrets
-imagePullSecrets:
-  dockerconfigjson: "eyJhdXRocyI6IHsiZ2hjci5pbyI6IHsiYXV0aCI6ICJZMlY0OlkyVjQifX19Cg=="
+#imagePullSecrets:
+#  dockerconfigjson: "eyJhdXRocyI6IHsiZ2hjci5pbyI6IHsiYXV0aCI6ICJZMlY0OlkyVjQifX19Cg=="
 # Database configuration
 database:
   host: postgres
   port: 5432
   name: cinemaabyss
   user: postgres
-  password: cG9zdGdyZXMK
+  password: postgres
   image:
     repository: postgres
     tag: 14
